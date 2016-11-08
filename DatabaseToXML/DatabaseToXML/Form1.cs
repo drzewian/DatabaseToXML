@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.Odbc;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MySql.Data.MySqlClient;
 
 namespace DatabaseToXML
 {
@@ -15,6 +18,35 @@ namespace DatabaseToXML
         public Form1()
         {
             InitializeComponent();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string connectionString = "Server=127.0.0.1;port=3306;Database=sport;UID=root;PWD=;";
+            
+
+            // Create and open the connection in a using block. This
+            // ensures that all resources will be closed and disposed
+            // when the code exits.            
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {   
+                // Open the connection in a try/catch block. 
+                // Create and execute the DataReader, writing the result
+                // set to the console window.
+                try
+                {
+                    connection.Open();
+                    if (connection.State == ConnectionState.Open)
+                    {
+                        listBox1.Items.Add("Nawiązano połączenie");
+                    }
+                    
+                }
+                catch (Exception ex)
+                {
+                    listBox1.Items.Add(ex.Message);
+                }                
+            }
         }
     }
 }
