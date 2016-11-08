@@ -22,8 +22,7 @@ namespace DatabaseToXML
 
         private void button1_Click(object sender, EventArgs e)
         {
-            string connectionString = "Server=127.0.0.1;port=3306;Database=sport;UID=root;PWD=;";
-            
+            string connectionString = "Server=mysql.cba.pl;Port=3306;Database=imprezymasowe_cba_pl;Uid=wsb123;Pwd=wsb123haslo";            
 
             // Create and open the connection in a using block. This
             // ensures that all resources will be closed and disposed
@@ -39,13 +38,37 @@ namespace DatabaseToXML
                     if (connection.State == ConnectionState.Open)
                     {
                         listBox1.Items.Add("Nawiązano połączenie");
+
+                        MySqlDataAdapter adapter = new MySqlDataAdapter();
+
+                        MySqlCommand command = new MySqlCommand("SHOW DATABASES", connection);
+                        command.CommandType = CommandType.Text;
+
+                        adapter.SelectCommand = command;
+
+                        DataSet dataSet = new DataSet("DateBases");
+
+                        adapter.Fill(dataSet);
+
+                        listBox1.Items.Add("Pobrano dane z bazydanych");
+
+                        dataGridView1.DataSource = dataSet.Tables[0].DefaultView;
+
+                        var table = dataSet.Tables[0].Rows;
+
+                        for(int i = 0; i<table.Count; i++)
+                        {
+                            listBox1.Items.Add(table[i].ItemArray[0].ToString());
+                        }
                     }
                     
                 }
                 catch (Exception ex)
                 {
                     listBox1.Items.Add(ex.Message);
-                }                
+                }
+                
+                               
             }
         }
     }
