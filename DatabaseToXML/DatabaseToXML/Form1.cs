@@ -22,7 +22,8 @@ namespace DatabaseToXML
 
         private void button1_Click(object sender, EventArgs e)
         {
-            string connectionString = "Server=localhost;Port=3306;Database=imprezy;Uid=root;Pwd=";            
+            string connectionString = "Server=" + tbServer.Text + ";Port=" + numericUpDownPort.Value.ToString() + ";Database=" + tbDatabase.Text + ";Uid=" + tbLogin.Text + ";Pwd=" + tbPassword.Text + ";";
+            //string connectionString = "Server=localhost;Port=3306;Database=imprezy;Uid=root;Pwd=";            
 
             // Create and open the connection in a using block. This
             // ensures that all resources will be closed and disposed
@@ -41,7 +42,9 @@ namespace DatabaseToXML
 
                         MySqlDataAdapter adapter = new MySqlDataAdapter();
 
-                        MySqlCommand command = new MySqlCommand("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_SCHEMA = 'imprezy'", connection);
+                        MySqlCommand command = new MySqlCommand();
+                        command.Connection = connection;
+                        command.CommandText = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_SCHEMA = '" + tbDatabase.Text + "'";
                         command.CommandType = CommandType.Text;
                         
                         adapter.SelectCommand = command;
@@ -106,6 +109,14 @@ namespace DatabaseToXML
                     listBox1.Items.Add(ex.Message);
                 }
             }
+        }
+
+        private void checkBoxShowPassword_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBoxShowPassword.Checked == true)
+                tbPassword.UseSystemPasswordChar = false;
+            else
+                tbPassword.UseSystemPasswordChar = true;
         }
     }
 }
