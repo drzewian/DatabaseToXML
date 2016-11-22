@@ -28,10 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.button1 = new System.Windows.Forms.Button();
+            this.ButtonConnect = new System.Windows.Forms.Button();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -45,19 +44,22 @@
             this.checkBoxShowPassword = new System.Windows.Forms.CheckBox();
             this.label6 = new System.Windows.Forms.Label();
             this.numericUpDownPort = new System.Windows.Forms.NumericUpDown();
+            this.ButtonDatabaseToXml = new System.Windows.Forms.Button();
+            this.ButtonXmlToDatabase = new System.Windows.Forms.Button();
+            this.ButtonDisconnect = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPort)).BeginInit();
             this.SuspendLayout();
             // 
-            // button1
+            // ButtonConnect
             // 
-            this.button1.Location = new System.Drawing.Point(16, 113);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(116, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Połącz";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.ButtonConnect.Location = new System.Drawing.Point(16, 113);
+            this.ButtonConnect.Name = "ButtonConnect";
+            this.ButtonConnect.Size = new System.Drawing.Size(116, 23);
+            this.ButtonConnect.TabIndex = 0;
+            this.ButtonConnect.Text = "Połącz";
+            this.ButtonConnect.UseVisualStyleBackColor = true;
+            this.ButtonConnect.Click += new System.EventHandler(this.button1_Click);
             // 
             // listBox1
             // 
@@ -78,15 +80,6 @@
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.Size = new System.Drawing.Size(398, 330);
             this.dataGridView1.TabIndex = 2;
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(203, 115);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(106, 21);
-            this.comboBox1.TabIndex = 3;
-            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
             // label1
             // 
@@ -203,11 +196,45 @@
             this.numericUpDownPort.Size = new System.Drawing.Size(131, 20);
             this.numericUpDownPort.TabIndex = 17;
             // 
+            // ButtonDatabaseToXml
+            // 
+            this.ButtonDatabaseToXml.Enabled = false;
+            this.ButtonDatabaseToXml.Location = new System.Drawing.Point(151, 113);
+            this.ButtonDatabaseToXml.Name = "ButtonDatabaseToXml";
+            this.ButtonDatabaseToXml.Size = new System.Drawing.Size(116, 23);
+            this.ButtonDatabaseToXml.TabIndex = 18;
+            this.ButtonDatabaseToXml.Text = "Baza -> XML";
+            this.ButtonDatabaseToXml.UseVisualStyleBackColor = true;
+            // 
+            // ButtonXmlToDatabase
+            // 
+            this.ButtonXmlToDatabase.Enabled = false;
+            this.ButtonXmlToDatabase.Location = new System.Drawing.Point(288, 113);
+            this.ButtonXmlToDatabase.Name = "ButtonXmlToDatabase";
+            this.ButtonXmlToDatabase.Size = new System.Drawing.Size(116, 23);
+            this.ButtonXmlToDatabase.TabIndex = 19;
+            this.ButtonXmlToDatabase.Text = "XML -> Baza";
+            this.ButtonXmlToDatabase.UseVisualStyleBackColor = true;
+            // 
+            // ButtonDisconnect
+            // 
+            this.ButtonDisconnect.Location = new System.Drawing.Point(16, 113);
+            this.ButtonDisconnect.Name = "ButtonDisconnect";
+            this.ButtonDisconnect.Size = new System.Drawing.Size(116, 23);
+            this.ButtonDisconnect.TabIndex = 20;
+            this.ButtonDisconnect.Text = "Rozłącz";
+            this.ButtonDisconnect.UseVisualStyleBackColor = true;
+            this.ButtonDisconnect.Visible = false;
+            this.ButtonDisconnect.Click += new System.EventHandler(this.ButtonDisconnect_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(821, 450);
+            this.Controls.Add(this.ButtonDisconnect);
+            this.Controls.Add(this.ButtonXmlToDatabase);
+            this.Controls.Add(this.ButtonDatabaseToXml);
             this.Controls.Add(this.numericUpDownPort);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.checkBoxShowPassword);
@@ -221,10 +248,9 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.listBox1);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.ButtonConnect);
             this.Name = "Form1";
             this.Text = "MySQL to XML";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
@@ -236,10 +262,9 @@
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button ButtonConnect;
         private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
@@ -253,6 +278,9 @@
         private System.Windows.Forms.CheckBox checkBoxShowPassword;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.NumericUpDown numericUpDownPort;
+        private System.Windows.Forms.Button ButtonDatabaseToXml;
+        private System.Windows.Forms.Button ButtonXmlToDatabase;
+        private System.Windows.Forms.Button ButtonDisconnect;
     }
 }
 
