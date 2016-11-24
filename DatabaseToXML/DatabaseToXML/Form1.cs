@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 using DatabaseToXML.Logic;
+using System.IO;
+using System.Xml;
 
 namespace DatabaseToXML
 {
@@ -34,9 +36,9 @@ namespace DatabaseToXML
             //string connectionString = "Server=localhost;Port=3306;Database=imprezy;Uid=root;Pwd=";
             string connectionString = "Server=" + tbServer.Text + ";Port=" + numericUpDownPort.Value.ToString() + ";Database=" + tbDatabase.Text + ";Uid=" + tbLogin.Text + ";Pwd=" + tbPassword.Text + ";";
 
-            dataCopier = new DatabaseCopier(connectionString);
+            dataCopier = new DatabaseCopier(connectionString, tbDatabase.Text);
 
-            listBox1.Items.Add(dataCopier.TestConnection(tbDatabase.Text));
+            listBox1.Items.Add(dataCopier.TestConnection());
 
             if (dataCopier.IsConnected)
             {
@@ -161,6 +163,38 @@ namespace DatabaseToXML
             ButtonDisconnect.Visible = false;
 
             listBox1.Items.Add("Rozłączono połączenie z serwerem.");
+        }
+
+        private void ButtonDatabaseToXml_Click(object sender, EventArgs e)
+        {
+            Stream myStream = null;
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+
+            saveFileDialog.Filter = "xml files (*.xml)|*.xml";
+            saveFileDialog.FilterIndex = 1;
+            saveFileDialog.RestoreDirectory = true;
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    if ((myStream = saveFileDialog.OpenFile()) != null)
+                    {
+                        using (myStream)
+                        {
+                            listBox1.Items.Add(dataCopier.GetDatabase());
+                            dataCopier.myDataSet.WriteXml(myStream, XmlWriteMode.WriteSchema);                          
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Błąd: Nie udało się zapisać danych do pliku. Błąd: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+
+            listBox1.Items.Add("Poprawnie zapisano bazę danych do pliku.");
         }
     }
 }
