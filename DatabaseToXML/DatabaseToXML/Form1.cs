@@ -51,94 +51,8 @@ namespace DatabaseToXML
                 tbPassword.Enabled = false;
                 ButtonConnect.Visible = false;
                 ButtonDisconnect.Visible = true;
-            }
-
-
-            // Create and open the connection in a using block. This
-            // ensures that all resources will be closed and disposed
-            // when the code exits.            
-            //using (MySqlConnection connection = new MySqlConnection(connectionString))
-            //{   
-            //    // Open the connection in a try/catch block. 
-            //    // Create and execute the DataReader, writing the result
-            //    // set to the console window.
-            //    try
-            //    {
-            //        connection.Open();
-            //        if (connection.State == ConnectionState.Open)
-            //        {
-            //            listBox1.Items.Add("Nawiązano połączenie");
-
-            //            MySqlDataAdapter adapter = new MySqlDataAdapter();
-
-            //            MySqlCommand command = new MySqlCommand();
-            //            command.Connection = connection;
-            //            command.CommandText = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_SCHEMA = '" + tbDatabase.Text + "'";
-            //            command.CommandType = CommandType.Text;
-                        
-            //            adapter.SelectCommand = command;
-
-            //            DataSet dataSet = new DataSet("DateBases");
-
-            //            adapter.Fill(dataSet);
-
-            //            listBox1.Items.Add("Pobrano dane z bazydanych");
-
-            //            dataGridView1.DataSource = dataSet.Tables[0].DefaultView;
-            //            for (int i = 0; i < dataSet.Tables[0].Rows.Count; i++)
-            //                comboBox1.Items.Add(dataSet.Tables[0].Rows[i].ItemArray[0]);                                              
-            //        }
-                    
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        listBox1.Items.Add(ex.Message);
-            //    }              
-            //}
-        }
-
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            //string connectionString = "Server=localhost;Port=3306;Database=imprezy;Uid=root;Pwd=";
-
-            //// Create and open the connection in a using block. This
-            //// ensures that all resources will be closed and disposed
-            //// when the code exits.            
-            //using (MySqlConnection connection = new MySqlConnection(connectionString))
-            //{
-            //    // Open the connection in a try/catch block. 
-            //    // Create and execute the DataReader, writing the result
-            //    // set to the console window.
-            //    try
-            //    {
-            //        connection.Open();
-            //        if (connection.State == ConnectionState.Open)
-            //        {
-            //            listBox1.Items.Add("Nawiązano połączenie");
-
-            //            MySqlDataAdapter adapter = new MySqlDataAdapter();
-
-            //            MySqlCommand command = new MySqlCommand("SELECT * FROM " + comboBox1.SelectedItem, connection);
-            //            command.CommandType = CommandType.Text;
-
-            //            adapter.SelectCommand = command;
-
-            //            DataSet dataSet = new DataSet("DateBases");
-
-            //            adapter.Fill(dataSet);
-
-            //            listBox1.Items.Add("Pobrano dane z bazydanych");
-
-            //            dataGridView1.DataSource = dataSet.Tables[0].DefaultView;
-            //        }
-
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        listBox1.Items.Add(ex.Message);
-            //    }
-            //}
-        }
+            }            
+        }       
 
         private void checkBoxShowPassword_CheckedChanged(object sender, EventArgs e)
         {
@@ -195,6 +109,36 @@ namespace DatabaseToXML
             }
 
             listBox1.Items.Add("Poprawnie zapisano bazę danych do pliku.");
+        }
+
+        private void ButtonXmlToDatabase_Click(object sender, EventArgs e)
+        {
+            Stream myStream = null;
+            
+            OpenFileDialog openFileDialog1 = new OpenFileDialog();
+
+            openFileDialog1.Filter = "xml files (*.xml)|*.xml";
+            openFileDialog1.FilterIndex = 1;
+            openFileDialog1.RestoreDirectory = true;
+
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    if ((myStream = openFileDialog1.OpenFile()) != null)
+                    {
+                        using (myStream)
+                        {
+                            listBox1.Items.Add(dataCopier.SaveDatabase(myStream));
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Błąd: Nie udało się odtworzyć danych. Błąd: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }            
         }
     }
 }

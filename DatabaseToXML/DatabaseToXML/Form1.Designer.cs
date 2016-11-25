@@ -193,6 +193,7 @@
             this.ButtonXmlToDatabase.TabIndex = 7;
             this.ButtonXmlToDatabase.Text = "XML -> Baza";
             this.ButtonXmlToDatabase.UseVisualStyleBackColor = true;
+            this.ButtonXmlToDatabase.Click += new System.EventHandler(this.ButtonXmlToDatabase_Click);
             // 
             // ButtonDisconnect
             // 
