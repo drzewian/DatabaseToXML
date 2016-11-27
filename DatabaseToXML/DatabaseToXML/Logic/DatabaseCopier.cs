@@ -112,10 +112,12 @@ namespace DatabaseToXML.Logic
                         command.Connection = connection;
 
                         myDataSet = new DataSet();                        
-                        myDataSet.ReadXml(myStream, XmlReadMode.ReadSchema);
+                        myDataSet.ReadXml(myStream, XmlReadMode.ReadSchema);                        
 
                         for (int i = 0; i < myDataSet.Tables.Count; i++)
-                        {                            
+                        {
+                            command.CommandText = CreateTableSql(myDataSet.Tables[i]);
+                            command.ExecuteNonQuery();                          
                             command.CommandText = "SELECT * FROM " + myDataSet.Tables[i].TableName;
                             command.CommandType = CommandType.Text;
                             adapter.SelectCommand = command;
@@ -123,8 +125,8 @@ namespace DatabaseToXML.Logic
 
                             adapter.InsertCommand = builder.GetInsertCommand();
                             adapter.Update(myDataSet, myDataSet.Tables[i].TableName);
-                        }                      
-        
+                            
+                        }
                         return "Pomyślnie odtworzono bazę danych.";
                     }
 
@@ -135,6 +137,78 @@ namespace DatabaseToXML.Logic
                 }
             }
             return "Nie udało się odtworzyć bazy danych.";
+        }
+
+        private string CreateTableSql(DataTable table)
+        {   
+            StringBuilder result = new StringBuilder();
+            result.AppendFormat("CREATE TABLE IF NOT EXISTS {1} ({0}   ", Environment.NewLine, table.TableName);
+
+            bool FirstTime = true;
+            foreach (DataColumn column in table.Columns.OfType<DataColumn>())
+            {
+                if (FirstTime) FirstTime = false;
+                else
+                    result.Append("   ,");
+
+                result.AppendFormat("{0} {1} {2} {3}",
+                    column.ColumnName, // 0
+                    GetSQLType(column.DataType, column.MaxLength), // 1
+                    column.AllowDBNull ? "" : "NOT NULL", // 2
+                    Environment.NewLine // 3
+                    );
+            }
+
+            if (table.PrimaryKey.Length > 0)
+            {
+                result.Append(GetPrimaryKey(table));
+            }
+            result.AppendLine();
+            result.AppendFormat(") {0}", Environment.NewLine);            
+
+            return result.ToString();
+        }
+
+        private string GetPrimaryKey(DataTable table)
+        {
+            StringBuilder result = new StringBuilder();            
+            result.AppendLine();
+            result.Append(",PRIMARY KEY (");
+
+            bool FirstTime = true;
+            foreach (DataColumn column in table.PrimaryKey)
+            {
+                if (FirstTime) FirstTime = false;
+                else
+                    result.Append(",");
+
+                result.Append(column.ColumnName);
+            }
+            result.Append(")");
+            return result.ToString();
+        }      
+                
+        private string GetSQLType(Type DataType, int columnSize)
+        {
+            switch (DataType.Name)
+            {
+                case "Boolean": return "boolean";
+                case "Char": return "char";
+                case "SByte": return "tinyint";
+                case "Int16": return "smallint";
+                case "Int32": return "int";
+                case "Int64": return "bigint";
+                case "Byte": return "tinyint UNSIGNED";
+                case "UInt16": return "smallint UNSIGNED";
+                case "UInt32": return "int UNSIGNED";
+                case "UInt64": return "bigint UNSIGNED";
+                case "Single": return "float";
+                case "Double": return "double";
+                case "Decimal": return "decimal";
+                case "DateTime": return "datetime";                
+                case "String": return "VARCHAR(" + ((columnSize == -1) ? 255 : columnSize) + ")"; ;
+                default: throw new Exception(DataType.ToString() + " not implemented."); ;
+            }
         }
     }
 }
