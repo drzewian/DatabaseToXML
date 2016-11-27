@@ -112,12 +112,13 @@ namespace DatabaseToXML.Logic
                         command.Connection = connection;
 
                         myDataSet = new DataSet();                        
-                        myDataSet.ReadXml(myStream, XmlReadMode.ReadSchema);                        
+                        myDataSet.ReadXml(myStream, XmlReadMode.ReadSchema);
+
+                        command.CommandText = CreateTables(myDataSet);
+                        command.ExecuteNonQuery();
 
                         for (int i = 0; i < myDataSet.Tables.Count; i++)
-                        {
-                            command.CommandText = CreateTableSql(myDataSet.Tables[i]);
-                            command.ExecuteNonQuery();                          
+                        {                                                     
                             command.CommandText = "SELECT * FROM " + myDataSet.Tables[i].TableName;
                             command.CommandType = CommandType.Text;
                             adapter.SelectCommand = command;
@@ -139,6 +140,19 @@ namespace DatabaseToXML.Logic
             return "Nie udało się odtworzyć bazy danych.";
         }
 
+        private string CreateTables(DataSet table)
+        {
+            StringBuilder result = new StringBuilder();
+            result.AppendFormat("BEGIN; {0}   ", Environment.NewLine);
+
+            for (int i = 0; i < myDataSet.Tables.Count; i++)
+            {
+                result.AppendFormat(CreateTableSql(myDataSet.Tables[i]) + "{0}", Environment.NewLine);
+            }
+            result.Append("COMMIT;");
+
+            return result.ToString();            
+        }
         private string CreateTableSql(DataTable table)
         {   
             StringBuilder result = new StringBuilder();
@@ -164,7 +178,7 @@ namespace DatabaseToXML.Logic
                 result.Append(GetPrimaryKey(table));
             }
             result.AppendLine();
-            result.AppendFormat(") {0}", Environment.NewLine);            
+            result.AppendFormat("); {0}", Environment.NewLine);            
 
             return result.ToString();
         }
